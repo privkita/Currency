@@ -9,10 +9,10 @@ public class Currency {
 	private final String code;
 	private final BigDecimal rate;
 	
-	public Currency(String name, String code, BigDecimal rate) {
+	public Currency(String name, String code, String rate) {
 		this.name = name;
 		this.code = code;
-		this.rate = rate;
+		this.rate = new BigDecimal(rate);
 	}
 
 	public String getName() {
