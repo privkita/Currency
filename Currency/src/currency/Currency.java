@@ -5,38 +5,38 @@ import java.math.RoundingMode;
 
 public class Currency {
 	
-	private final String name;
-	private final String code;
-	private final BigDecimal rate;
+	private final String currencyName;
+	private final String currencyCode;
+	private final BigDecimal currencyRate;
 	
-	public Currency(String name, String code, String rate) {
-		this.name = name;
-		this.code = code;
-		this.rate = new BigDecimal(rate);
+	public Currency(String currencyName, String currencyCode, String currencyRate) {
+		this.currencyName = currencyName;
+		this.currencyCode = currencyCode;
+		this.currencyRate = new BigDecimal(currencyRate);
 	}
 
 	public String getName() {
-		return name;
+		return currencyName;
 	}
 
 	public String getCode() {
-		return code;
+		return currencyCode;
 	}
 
 	public BigDecimal getRate() {
-		return rate;
+		return currencyRate;
 	}
 	
 	public BigDecimal exchangeToPln(BigDecimal amount) {
-		return amount.multiply(rate).setScale(2, RoundingMode.HALF_UP);
+		return amount.multiply(currencyRate).setScale(2, RoundingMode.HALF_UP);
 	}
 	
 	public BigDecimal exchangeFromPln(BigDecimal amount) {
-		return amount.divide(rate, 2, RoundingMode.HALF_UP);
+		return amount.divide(currencyRate, 2, RoundingMode.HALF_UP);
 	}
 
 	@Override
 	public String toString() {
-		return code + " (" + name + ") " + rate;
+		return currencyCode + " (" + currencyName + ") " + currencyRate;
 	}
 }
