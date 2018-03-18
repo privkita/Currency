@@ -49,7 +49,7 @@ public class table {
 	}
 	// Need correction
 	public List<Currency> getCurrenciesCodes() {
-		return currencies.keySet().stream().toArray();
+		// return currencies.keySet().stream().toArray();
 	}
 	
 }
