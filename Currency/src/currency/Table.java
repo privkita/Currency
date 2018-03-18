@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class table {
+public class Table {
 	
 	private final String TableNumber; 
 	private final LocalDate TableDate;
 	private Map<String, Currency> currencies = new TreeMap<String, Currency>();
 	
-	public table() {
+	public Table() {
 		TableNumber = null;
 		TableDate = null;
 	}
 	
-	public table(String tableNumber, LocalDate tableDate) {
+	public Table(String tableNumber, LocalDate tableDate) {
 		TableNumber = tableNumber;
 		TableDate = tableDate;
 	}
@@ -47,9 +47,9 @@ public class table {
 	public Collection<Currency> getAllCurrencies() {
 		return currencies.values();
 	}
-	// Need correction
-	public List<Currency> getCurrenciesCodes() {
-		// return currencies.keySet().stream().toArray();
+	
+	public Collection<String> getCurrenciesCodes() {
+		return currencies.keySet();
 	}
 	
 }

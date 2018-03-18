@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
-class CurrencyExchangeFromPln {
+class CurrencyExchangeFromPlnTest {
 
 	@Test
 	void testExchangeFromPln() {
