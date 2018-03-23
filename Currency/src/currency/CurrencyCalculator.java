@@ -12,7 +12,7 @@ import javax.swing.SwingWorker;
 
 /**
  *
- * @author Tata
+ * @author Lukasz Kita
  */
 public class CurrencyCalculator extends javax.swing.JFrame {
 	
