@@ -20,8 +20,8 @@ import org.xml.sax.SAXException;
 
 public class NBPHandler {
 	
-	public static Table getTable() {
-		Document doc = readXML("http://api.nbp.pl/api/exchangerates/tables/A?format=xml");
+	public static Table getTable(String data) {
+		Document doc = readXML("http://api.nbp.pl/api/exchangerates/tables/A/" + data + "/?format=xml");
 		return tableFromXML(doc);
 	}
 	
@@ -50,12 +50,12 @@ public class NBPHandler {
 			
 			Table currenciesTable = new Table(tableNumber, tableDate);
 			
-			NodeList rates = (NodeList)xpath.evaluate("//rate", doc, XPathConstants.NODESET);
+			NodeList rates = (NodeList) xpath.evaluate("//Rate", doc, XPathConstants.NODESET);
 			for(int i = 0; i < rates.getLength(); i++) {
 				Node rate = rates.item(i);
-				String currencyName = xpath.evaluate("Currency", doc);
-				String currencyCode = xpath.evaluate("Code", doc);
-				String currencyRate = xpath.evaluate("Mid", doc);
+				String currencyName = xpath.evaluate("Currency", rate);
+				String currencyCode = xpath.evaluate("Code", rate);
+				String currencyRate = xpath.evaluate("Mid", rate);
 				Currency currency = new Currency(currencyName, currencyCode, currencyRate);
 				currenciesTable.addCurrency(currency);
 			}

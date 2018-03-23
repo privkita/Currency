@@ -9,10 +9,14 @@ public class Currency {
 	private final String currencyCode;
 	private final BigDecimal currencyRate;
 	
-	public Currency(String currencyName, String currencyCode, String currencyRate) {
+	public Currency(String currencyName, String currencyCode, BigDecimal currencyRate) {
 		this.currencyName = currencyName;
 		this.currencyCode = currencyCode;
-		this.currencyRate = new BigDecimal(currencyRate);
+		this.currencyRate = currencyRate;
+	}
+	
+	public Currency(String currencyName, String currencyCode, String currencyRate) {
+		this(currencyName, currencyCode, new BigDecimal(currencyRate));
 	}
 
 	public String getName() {

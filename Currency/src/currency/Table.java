@@ -2,7 +2,9 @@ package currency;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class Table {
@@ -10,6 +12,7 @@ public class Table {
 	private final String TableNumber; 
 	private final LocalDate TableDate;
 	private Map<String, Currency> currencies = new TreeMap<String, Currency>();
+	private static final String[] EMPTY_TABLE = new String[0];
 	
 	public Table() {
 		TableNumber = null;
@@ -47,8 +50,15 @@ public class Table {
 		return currencies.values();
 	}
 	
-	public Collection<String> getCurrenciesCodes() {
-		return currencies.keySet();
+	public String[] getCurrenciesCodes() {
+		return currencies.keySet().toArray(EMPTY_TABLE);
 	}
 	
+	public String[] getCurrenciesSet() {
+		int i = 0;
+		String[] currenciesSet = new String[currencies.size()];
+		for (Entry<String, Currency> currency : currencies.entrySet())
+			currenciesSet[i++] = currency.getKey() + "   " + (currency.getValue().getName());
+		return currenciesSet;
+	}
 }
