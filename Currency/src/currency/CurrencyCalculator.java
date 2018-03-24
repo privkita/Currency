@@ -7,6 +7,8 @@ import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingWorker;
 
@@ -312,6 +314,9 @@ public class CurrencyCalculator extends javax.swing.JFrame {
 			@Override
 			protected Void doInBackground() throws Exception {
 				table = NBPHandler.getTable(LocalDate.now().toString());
+				while (table == null) {
+					table = NBPHandler.getTable(LocalDate.now().minusDays(1).toString());
+				}
 				return null;
 			}
     		protected void done() {
@@ -329,8 +334,12 @@ public class CurrencyCalculator extends javax.swing.JFrame {
 			protected Void doInBackground() throws Exception {
 				String date = ((Date)dateSpinner.getValue()).toLocaleString().substring(0, 10);
 				Table newTable = NBPHandler.getTable(date);
-				if (newTable != null)
+				if (newTable != null) {
 					table = newTable;
+				} else {
+					jTextArea1.setText("Brak tabeli dla podanej daty.");
+					table = null;
+				}
 				return null;
 			}
     		protected void done() {
