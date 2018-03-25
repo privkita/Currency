@@ -7,14 +7,12 @@ import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingWorker;
 
 /**
  *
- * @author Lukasz Kita
+ * @author Lucas Kita
  */
 public class CurrencyCalculator extends javax.swing.JFrame {
 	
@@ -86,16 +84,10 @@ public class CurrencyCalculator extends javax.swing.JFrame {
         amountLabel.setText(" Kwota:");
 
         amountSpinner.setModel(new javax.swing.SpinnerNumberModel(100, 0, null, 100));
-        amountSpinner.setValue(1);
 
         currencyLabel.setText(" Waluta:");
 
-        currencyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        currencyComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                currencyComboBoxActionPerformed(evt);
-            }
-        });
+        currencyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "----"}));
 
         buttonGroup1.add(toPLNButton);
         toPLNButton.setSelected(true);
@@ -118,6 +110,12 @@ public class CurrencyCalculator extends javax.swing.JFrame {
         przeliczButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 przeliczButtonActionPerformed(evt);
+            }
+        });
+        
+        jPanel1.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jPanel1ComponentShown(evt);
             }
         });
 
@@ -183,7 +181,8 @@ public class CurrencyCalculator extends javax.swing.JFrame {
         calculatorPane.addTab("Kalkulator walutowy", jPanel1);
 
         dateChooseLabel.setText("Wybierz datę");
-
+        
+        // changing dateFormat for "date only" in dateSpinner
         SimpleDateFormat model = new SimpleDateFormat("dd-MM-yyyy");
         dateSpinner.setModel(new SpinnerDateModel(new java.util.Date(), new java.util.Date(1009883340000L), new java.util.Date(), java.util.Calendar.DAY_OF_MONTH));
         dateSpinner.setEditor(new JSpinner.DateEditor(dateSpinner, model.toPattern()));
@@ -261,13 +260,13 @@ public class CurrencyCalculator extends javax.swing.JFrame {
     private void przeliczButtonActionPerformed(java.awt.event.ActionEvent evt) {                                         
     	calculate();
     }
-
-    private void currencyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {                                                 
-        // TODO add your handling code here:
-    }
     
     private void pobierzButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	printArchiveTable();
+    }
+    
+    private void jPanel1ComponentShown(java.awt.event.ComponentEvent evt) {                                       
+    	getRates(LocalDate.now().toString());
     }
 
     /**
@@ -302,20 +301,24 @@ public class CurrencyCalculator extends javax.swing.JFrame {
             public void run() {
             	CurrencyCalculator calculator = new CurrencyCalculator();
                 calculator.setVisible(true);
-                calculator.getRates();
+                calculator.getRates(LocalDate.now().toString());
             }
         });
     }
-    
-    private void getRates() {
+    // Geting rates for given date and returning as table
+    // When there is no data, like in saturdays or sundays substract a day from given date 
+    // to first not null table
+    private void getRates(String date) {
     	
     	SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				table = NBPHandler.getTable(LocalDate.now().toString());
+				LocalDate givenDate = LocalDate.parse(date);
+				table = NBPHandler.getTable(givenDate.toString());
 				while (table == null) {
-					table = NBPHandler.getTable(LocalDate.now().minusDays(1).toString());
+					table = NBPHandler.getTable(givenDate.toString());
+					givenDate = givenDate.minusDays(1);
 				}
 				return null;
 			}
@@ -324,29 +327,6 @@ public class CurrencyCalculator extends javax.swing.JFrame {
     		}
     	};
     	worker.execute();   	
-    }
-    
-    private void getArchiveRates() {
-    	
-    	SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-
-			@Override
-			protected Void doInBackground() throws Exception {
-				String date = ((Date)dateSpinner.getValue()).toLocaleString().substring(0, 10);
-				Table newTable = NBPHandler.getTable(date);
-				if (newTable != null) {
-					table = newTable;
-				} else {
-					jTextArea1.setText("Brak tabeli dla podanej daty.");
-					table = null;
-				}
-				return null;
-			}
-    		protected void done() {
-    			refreshTable();
-    		}
-    	};
-    	worker.execute();
     }
     
     private void refreshTable() {
@@ -367,9 +347,11 @@ public class CurrencyCalculator extends javax.swing.JFrame {
     }
     
     private void printArchiveTable() {
-    	getArchiveRates();
+    	String date = ((Date)dateSpinner.getValue()).toLocaleString().substring(0, 10);
+    	getRates(date);
+    	
     	try {
-			Thread.sleep(500);
+			Thread.sleep(700);
 	    	jTextArea1.setText(table.toString());
 	    	jTextArea1.append("\n");
 	    	for (Currency currency : table.getAllCurrencies()) {
