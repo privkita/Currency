@@ -305,8 +305,8 @@ public class CurrencyCalculator extends javax.swing.JFrame {
             }
         });
     }
-    // Geting rates for given date and returning as table
-    // When there is no data, like in saturdays or sundays substract a day from given date 
+    // Getting rates for given date and returning as table
+    // When there is no data, like in Saturdays or Sundays subtract a day from given date 
     // to first not null table
     private void getRates(String date) {
     	
